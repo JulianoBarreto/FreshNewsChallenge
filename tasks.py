@@ -30,9 +30,16 @@ def rpa_main_core():
     bot = Otomatika_news()
 
     # Getting the filters:
-    item = workitems.inputs
-    print("Received payload:", workitems)
-    parameters = bot.get_filters()
+    item = workitems.inputs.current
+    input_data = item.payload
+    print("Processing input data:", input_data)
+    # parameters = bot.get_filters()
+    parameters = input_data
+    if parameters['phrase'] is None or parameters['start_date'] is None or parameters['end_date'] is None:
+        error_msg = "ERROR: You must provide the 'phrase', the 'start_date' and the 'end_date' parameters."
+        LOGGER.error()
+    if parameters['img_size'] is None:
+        parameters['img_size'] = "1080w"
 
     # Search for the news using the parameters:
     try:
