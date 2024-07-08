@@ -212,6 +212,7 @@ class Otomatika_news():
                     "%news_links%")
 
         # Feeding with the news links:
+        links = ""
         for article in articles:
             links = links + article['art_url'] + "\n"
         # Updating the prompt:

@@ -46,6 +46,6 @@ def rpa_main_core():
     qt_news = bot.save_data_excel(parameters, articles)
 
     # Ask the question to I.A., if exists:
-    if parameters['ia_question'] is not None:
+    if parameters.get('ia_question') is not None:
         bot.ask_ia(articles, parameters['ia_question'])
     LOGGER.info(f"All done! {qt_news} was found and saved.")
