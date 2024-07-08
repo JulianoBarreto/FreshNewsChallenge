@@ -6,6 +6,7 @@ import re
 import os
 import sys
 from robocorp import workitems
+from RPA.Robocorp.Vault import Vault
 from RPA.Excel.Files import Files
 from openai import OpenAI
 
@@ -24,8 +25,10 @@ class Otomatika_news():
         
     def __init__(self, debug=False):
         self.debug = debug 
-        # OpenAI Configurations:
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        # Getting the vault variables:
+        _secret = Vault().get_secret("OpenAI")
+        self.openai_api_key = _secret["OPENAI_API_KEY"]
+        
 
     def get_filters(self):
         """ 
@@ -201,7 +204,7 @@ class Otomatika_news():
         LOGGER.info("Starting the A.I. Bot...")
 
         # OpenAI Configurations:
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))  # TODO: Need to put this API KEY in the vault.
+        client = OpenAI(api_key=self.openai_api_key)  
         model = "gpt-4o"
         prompt = ("You are a news specialist. Your job is to open all the Reuters news links below and use all the information "
                     "gathered to answer the user's question. You MUST OPEN all the Reuters links provided:"
