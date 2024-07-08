@@ -7,6 +7,7 @@ import os
 import sys
 from robocorp import workitems
 from RPA.Excel.Files import Files
+from openai import OpenAI
 
 # Logging Config:
 stdout = logging.StreamHandler(sys.stdout)
@@ -23,6 +24,8 @@ class Otomatika_news():
         
     def __init__(self, debug=False):
         self.debug = debug 
+        # OpenAI Configurations:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
     def get_filters(self):
         """ 
@@ -183,3 +186,42 @@ class Otomatika_news():
             int: Number of times the needle was found.
         """
         return str.lower().count(phrase.lower())
+
+    def ask_ia(self, articles, question):
+        """
+            Ask 'question' to IA, based on the found news.
+
+            Parameters:
+            articles(dict): The news articles found.
+            question(string): The question itself.
+
+            Returns:
+            Dict: Returns a payload ('ia_response') to Robocorp work item.
+        """
+        LOGGER.info("Starting the A.I. Bot...")
+
+        # OpenAI Configurations:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))  # TODO: Need to put this API KEY in the vault.
+        model = "gpt-4o"
+        prompt = ("You are a news specialist. Your job is to open all the Reuters news links below and use all the information "
+                    "gathered to answer the user's question. You MUST OPEN all the Reuters links provided:"
+                    "Reuters News Links:"
+                    "%news_links%")
+
+        # Feeding with the news links:
+        for article in articles:
+            links = links + article['art_url'] + "\n"
+        # Updating the prompt:
+        conversation = [{"role": "system", "content": prompt.replace("%news_links%", links)},]
+        conversation.append({"role": "user", "content": question})
+        LOGGER.info(f"Question asked: {question}")
+        # Startign the chat:
+        chat = client.chat.completions.create(
+            model=model, messages=conversation
+        )
+        reply = chat.choices[0].message.content
+        # conversation.append({"role": "assistant", "content": reply})
+        LOGGER.info(f"The A.I. responded: {reply}")
+        processed_data = {"ia_response": reply}
+        workitems.outputs.create(payload=processed_data)
+
