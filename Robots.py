@@ -43,7 +43,7 @@ class Otomatika_news():
         if parameters['img_size'] is None:
             parameters['img_size'] = "1080w"  # Set a default image width (1080px).
 
-        LOGGER.info(f"Processing input data: {json.dump(parameters)}")
+        LOGGER.info(f"Processing input data: {json.dumps(parameters)}")
         return parameters
 
     def get_news_from_reuters(self, par):
