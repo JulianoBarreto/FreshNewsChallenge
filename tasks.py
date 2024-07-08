@@ -1,12 +1,9 @@
 import logging
 import sys
 from robocorp.tasks import task
-from robocorp import workitems
 from RPA.Excel.Files import Files as Excel
 from Robots import Otomatika_news
 from pathlib import Path
-import os
-import requests
 import traceback
 
 # Logging Config:
@@ -30,22 +27,18 @@ def rpa_main_core():
     bot = Otomatika_news()
 
     # Getting the filters:
-    item = workitems.inputs.current
-    input_data = item.payload
-    print("Processing input data:", input_data)
-    # parameters = bot.get_filters()
-    parameters = input_data
-    if parameters['phrase'] is None or parameters['start_date'] is None or parameters['end_date'] is None:
-        error_msg = "ERROR: You must provide the 'phrase', the 'start_date' and the 'end_date' parameters."
-        LOGGER.error()
-    if parameters['img_size'] is None:
-        parameters['img_size'] = "1080w"
+    try:
+        parameters = bot.get_filters()
+    except ValueError as v:
+        LOGGER.error("An error occured! Please consider this information: VALUE Error: %s" % (v))
+        exit(10)
 
     # Search for the news using the parameters:
     try:
         articles = bot.get_news_from_reuters(parameters)
     except ValueError as v:
         LOGGER.error("An error occured! Please consider this information: VALUE Error: %s, TRACEBACK: %s" % (v, traceback.format_exc()))
+        exit(10)
     except UserWarning as w:
         LOGGER.warning(w)
 

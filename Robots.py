@@ -5,7 +5,7 @@ import json
 import re
 import os
 import sys
-
+from robocorp import workitems
 from RPA.Excel.Files import Files
 
 # Logging Config:
@@ -34,11 +34,17 @@ class Otomatika_news():
             Returns:
             dict: Dictionary with all the parameters selected by user (search phrase, start date, end date and image size).
         """
-        return {"phrase":os.getenv("phrase"), 
-                "start_date": os.getenv("start_date"), 
-                "end_date": os.getenv("end_date"),
-                "img_size": os.getenv("img_size"),
-                "ia_question": os.getenv("img_size")}
+        item = workitems.inputs.current
+        parameters = item.payload
+        if parameters['phrase'] is None or parameters['start_date'] is None or parameters['end_date'] is None:
+            error_msg = "ERROR: You must provide the 'phrase', the 'start_date' and the 'end_date' parameters."
+            print(error_msg)
+            raise ValueError(error_msg)
+        if parameters['img_size'] is None:
+            parameters['img_size'] = "1080w"  # Set a default image width (1080px).
+
+        LOGGER.info(f"Processing input data: {json.dump(parameters)}")
+        return parameters
 
     def get_news_from_reuters(self, par):
         """
@@ -55,10 +61,10 @@ class Otomatika_news():
         offset_size = 100  # Number of news to retrieve per page.
         offset = 0  # The offset - actual news.
         url = 'https://www.reuters.com/pf/api/v3/content/fetch/articles-by-search-v2?query=\
-                {"end_date":"' + par['end_date'].strftime('%Y-%m-%d') + '", \
+                {"end_date":"' + par['end_date'] + '", \
                 "keyword":"' + par['phrase'] + '", "offset":"' + str(offset) + '", \
                 "orderby":"display_date:desc", "size":"' + str(offset_size) + '", \
-                "start_date":"' + par['start_date'].strftime('%Y-%m-%d') + '", \
+                "start_date":"' + par['start_date'] + '", \
                 "website":"reuters"}&d=201&_website=reuters'
 
         LOGGER.info("Getting the news from %s until %s. Searching for '%s'..." % (par['start_date'], par['end_date'], par['phrase']))
