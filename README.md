@@ -5,9 +5,13 @@ The challenge was to create a RPA bot to get news from a website and save it on 
 #### VS Code
 1. The project was developed in Python (VS Code IDE) with [Robocorp] (https://www.robocorp.com)
 
+## Input
+The input must be a Robocorp Control Panel work item payload. 
+
 ## Results
 
 🚀 After running the bot, check out the `output` folder for files (.xlsx with results).
+🤖 The response of the advisor dumped in a Robocorp payload work item.
 
 
 <!-- <details>
