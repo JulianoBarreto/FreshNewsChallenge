@@ -19,7 +19,6 @@ logging.basicConfig(
 LOGGER = logging.getLogger(__name__)
 
 
-
 @task
 def rpa_main_core():
     """
@@ -29,8 +28,8 @@ def rpa_main_core():
 
     bot = Otomatika_news()
 
-    p = bot.get_filters()
-    parameters = {"phrase":p.phrase, "category":"", "start_date":p.start_date, "end_date":p.end_date, "img_size":p.img_size}
+    # Getting the filters:
+    parameters = bot.get_filters()
 
     # Search for the news using the parameters:
     try:
@@ -39,3 +38,7 @@ def rpa_main_core():
         LOGGER.error("An error occured! Please consider this information: VALUE Error: %s, TRACEBACK: %s" % (v, traceback.format_exc()))
     except UserWarning as w:
         LOGGER.warning(w)
+
+    # Saving the response in an Excel file: 
+    qt_news = bot.save_data_excel(parameters, articles)
+    LOGGER.info(f"All done! {qt_news} was found and saved.")
