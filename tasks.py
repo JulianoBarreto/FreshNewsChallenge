@@ -1,6 +1,7 @@
 import logging
 import sys
 from robocorp.tasks import task
+from robocorp import workitems
 from RPA.Excel.Files import Files as Excel
 from Robots import Otomatika_news
 from pathlib import Path
@@ -29,6 +30,8 @@ def rpa_main_core():
     bot = Otomatika_news()
 
     # Getting the filters:
+    item = workitems.inputs
+    print("Received payload:", workitems)
     parameters = bot.get_filters()
 
     # Search for the news using the parameters:
