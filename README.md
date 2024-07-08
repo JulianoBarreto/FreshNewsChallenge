@@ -3,7 +3,7 @@
 The challenge was to create a RPA bot to get news from a website and save it on an Excel file, with title, date, description, picture filename, count the search phrase in title and description, if the title or the description contains an amount of money.
 
 #### VS Code
-1. The project was developed in Vs Code with [Rocorp] (https://www.robocorp.com)
+1. The project was developed in Python (VS Code IDE) with [Robocorp] (https://www.robocorp.com)
 
 ## Results
 

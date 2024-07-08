@@ -3,6 +3,7 @@ import requests
 import warnings
 import json
 import re
+import os
 
 from RPA.Excel.Files import Files
 
@@ -24,7 +25,7 @@ class Otomatika_news():
 
     def get_filters(self):
         """ 
-            Shows a window and get the parameters to search and filter the news. 
+            Get the parameters from environment to search and filter the news. 
 
             Parameters: 
             None
@@ -32,20 +33,11 @@ class Otomatika_news():
             Returns:
             dict: Dictionary with all the parameters selected by user (search phrase, start date, end date and image size).
         """
-        assistant = Assistant()
-        assistant.add_heading("Select Your Filters")
-        assistant.add_text_input("phrase", default="coffee", label="Search Phrase")
-        assistant.add_date_input("start_date", default="2024-06-30", label="Start Date")
-        assistant.add_date_input("end_date", default="2024-07-02", label="End Date")
-        assistant.add_drop_down(
-            name="img_size",
-            options="60w,120w,240w,480w,960w,1080w,1200w,1920w",
-            default="1080w",
-            label="Image Width"
-        )
-        assistant.add_submit_buttons("Submit", default="Submit")
-        result = assistant.run_dialog()
-        return result
+        return {"phrase":os.getenv("phrase"), 
+                "start_date": os.getenv("start_date"), 
+                "end_date": os.getenv("end_date"),
+                "img_size": os.getenv("img_size"),
+                "ia_question": os.getenv("img_size")}
 
     def get_news_from_reuters(self, par):
         """
